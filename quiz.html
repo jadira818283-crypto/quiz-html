@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<title>HTML & CSS Онлайн Тест</title>
+<style>
+body{
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#4e73df,#1cc88a);
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:20px;
+    margin:0;
+}
+.container{
+    background:#fff;
+    width:650px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 30px rgba(0,0,0,0.2);
+}
+h2{margin-bottom:15px;}
+p{margin:5px 0;}
+.option{
+    display:block;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ddd;
+    cursor:pointer;
+    transition:0.3s;
+}
+.option:hover{background:#f8f9fc;}
+.correct{
+    background:#d4edda !important;
+    border:1px solid #28a745;
+}
+.wrong{
+    background:#f8d7da !important;
+    border:1px solid #dc3545;
+}
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    background:#4e73df;
+    color:white;
+    cursor:pointer;
+    margin-top:10px;
+}
+button:hover{background:#2e59d9;}
+.progress{
+    height:8px;
+    background:#ddd;
+    border-radius:5px;
+    margin-bottom:15px;
+}
+.progress-bar{
+    height:8px;
+    background:#28a745;
+    width:0%;
+    border-radius:5px;
+}
+.hidden{display:none;}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- 1-кезең: Теория -->
+<div id="theory">
+<h2>📘 Теория (20 тақырып + стиль түрлері)</h2>
+<div id="theoryContent"></div>
+<button id="startTestBtn">Тестті бастау</button>
+</div>
+
+<!-- 2-кезең: Тест -->
+<div id="quiz" class="hidden">
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+<h2 id="question"></h2>
+<div id="answers"></div>
+<button onclick="nextQuestion()">Келесі</button>
+</div>
+
+</div>
+
+<script>
+// 1-кезең: теория (тек қысқаша түсіндірме)
+const theoryList = [
+["HTML","Веб-бет құрылымын анықтайтын тіл."],
+["CSS","Веб-бет стильдерін анықтайтын тіл."],
+["Сыртқы стиль","Сыртқы CSS файлын қолдану."],
+["Ішкі стиль","HTML құжатының <style> тегінде жазылатын CSS."],
+["Ендірілген стиль","Тікелей HTML элементінде style атрибуты арқылы стиль беру."],
+["ID селектор","#id синтаксисі, бірегей элементке стиль беру."],
+["Class селектор",".class синтаксисі, бірнеше элементке стиль беру."],
+["Flexbox","Элементтерді икемді түрде орналастыру жүйесі."],
+["Grid","Элементтерді торлық жүйеде орналастыру."],
+["Background color","Элементтің фон түсін анықтау."],
+["Text align","Мәтінді көлденеңінен туралау."],
+["Semantic tag","Мазмұнның мәнін көрсететін HTML5 тегтері."],
+["Комментарий","Кодқа түсініктеме қосу."],
+["Margin","Сыртқы арақашықтық."],
+["Padding","Ішкі арақашықтық."],
+["Hover псевдокласы","Элементке тышқан апарғанда стиль өзгерту."],
+["CSS файл кеңейтілімі",".css файлы."],
+["Сурет енгізу","Веб-бетке сурет қосу."],
+["Responsive (@media)","Экран өлшеміне байланысты стильдерді өзгерту."],
+["JavaScript енгізу","Веб-бетке интерактивтілік қосу."]  
+];
+
+// Теорияны шығару
+const theoryContent = document.getElementById("theoryContent");
+theoryList.forEach((item,i)=>{
+    theoryContent.innerHTML += `<p><strong>${i+1}. ${item[0]}:</strong> ${item[1]}</p>`;
+});
+
+// 2-кезең: Тест сұрақтары
+const quizData = [
+{q:"1. HTML толық атауы?",a:["Hyper Text Markup Language","Home Tool Markup Language","Hyperlinks Text","High Text Machine"],correct:0},
+{q:"2. CSS толық атауы?",a:["Creative Style","Cascading Style Sheets","Computer Style","Color Style"],correct:1},
+{q:"3. CSS файлын қосу тегі?",a:["<script>","<style>","<link>","<css>"],correct:2},
+{q:"4. Ішкі стиль қай тегте?",a:["<body>","<style>","<head>","<css>"],correct:1},
+{q:"5. Ендірілген стиль?",a:["<style>","style атрибуты","<css>","<link>"],correct:1},
+{q:"6. ID селекторы?",a:[".id","#id","*id","id."],correct:1},
+{q:"7. Class селекторы?",a:["#class",".class","*class","class#"],correct:1},
+{q:"8. Flexbox қосу?",a:["display:flex","flex:on","position:flex","layout:flex"],correct:0},
+{q:"9. Grid қосу?",a:["grid:on","display:grid","layout:grid","position:grid"],correct:1},
+{q:"10. Фон түсі?",a:["color","background-color","font-color","bgcolor"],correct:1},
+{q:"11. Мәтінді ортаға?",a:["align:center","text-align:center","center:text","font:center"],correct:1},
+{q:"12. HTML5 семантикалық тег?",a:["<div>","<section>","<span>","<font>"],correct:1},
+{q:"13. CSS комментарийі?",a:["//","<!-- -->","/* */","#"],correct:2},
+{q:"14. Margin не үшін?",a:["Ішкі арақашықтық","Сыртқы арақашықтық","Түс","Өлшем"],correct:1},
+{q:"15. Padding не үшін?",a:["Ішкі арақашықтық","Сыртқы арақашықтық","Түс","Өлшем"],correct:0},
+{q:"16. Псевдокласс?",a:[".hover",":hover","#hover","hover:"],correct:1},
+{q:"17. CSS файл кеңейтілімі?",a:[".html",".css",".js",".txt"],correct:1},
+{q:"18. Сурет тегі?",a:["<image>","<img>","<src>","<picture>"],correct:1},
+{q:"19. Сілтеме тегі?",a:["<a>","<link>","<href>","<ref>"],correct:0},
+{q:"20. Responsive үшін?",a:["@media","@responsive","media()","screen()"],correct:0}
+];
+
+let current=0;
+let score=0;
+let answered=false;
+
+const theoryDiv=document.getElementById("theory");
+const quizDiv=document.getElementById("quiz");
+const questionEl=document.getElementById("question");
+const answersEl=document.getElementById("answers");
+const progressBar=document.getElementById("progressBar");
+const startTestBtn=document.getElementById("startTestBtn");
+
+startTestBtn.onclick=()=>{
+    theoryDiv.classList.add("hidden");
+    quizDiv.classList.remove("hidden");
+    loadQuestion();
+};
+
+function loadQuestion(){
+answered=false;
+const q=quizData[current];
+questionEl.innerText=q.q;
+answersEl.innerHTML="";
+q.a.forEach((opt,i)=>{
+    const div=document.createElement("div");
+    div.classList.add("option");
+    div.innerText=opt;
+    div.onclick=()=>selectAnswer(i,div);
+    answersEl.appendChild(div);
+});
+updateProgress();
+}
+
+function selectAnswer(index,element){
+if(answered) return;
+answered=true;
+const correct=quizData[current].correct;
+const options=document.querySelectorAll(".option");
+options.forEach(opt=>opt.onclick=null);
+
+if(index===correct){
+    element.classList.add("correct");
+    score++;
+}else{
+    element.classList.add("wrong");
+    options[correct].classList.add("correct");
+}
+}
+
+function nextQuestion(){
+if(!answered){
+    alert("Жауап таңдаңыз!");
+    return;
+}
+current++;
+if(current<quizData.length){
+    loadQuestion();
+}else{
+    finishQuiz();
+}
+}
+
+function updateProgress(){
+let percent=(current/quizData.length)*100;
+progressBar.style.width=percent+"%";
+}
+
+function finishQuiz(){
+let percent=Math.round((score/quizData.length)*100);
+let grade="";
+if(percent>=90) grade="Өте жақсы";
+else if(percent>=75) grade="Жақсы";
+else if(percent>=50) grade="Қанағаттанарлық";
+else grade="Нашар";
+
+document.querySelector(".container").innerHTML=
+"<h2>Тест аяқталды!</h2>"+
+"<p>Дұрыс жауап: "+score+" / "+quizData.length+"</p>"+
+"<p>Нәтиже: "+percent+"%</p>"+
+"<p>Баға: "+grade+"</p>";
+}
+</script>
+
+</body>
+</html>
